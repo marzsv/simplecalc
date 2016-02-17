@@ -14,12 +14,12 @@ class CalcSpec extends ObjectBehavior
 
     function it_should_return_zero_for_an_empty_string()
     {
-        $this->add("")->shouldReturn(0);
+        $this->add('')->shouldReturn(0);
     }
 
     function it_should_add_one_number()
     {
-        $this->add("5")->shouldReturn(5);
+        $this->add('5')->shouldReturn(5);
     }
 
     function it_should_add_multiple_numbers()
@@ -29,12 +29,12 @@ class CalcSpec extends ObjectBehavior
 
     function it_should_accept_new_line_char_as_separator()
     {
-        $this->add("1\n2,3")->shouldReturn(6);
+        $this->add('1\n2,3')->shouldReturn(6);
     }
 
     function it_should_accept_any_char_as_separator()
     {
-        $this->add("//;\n1;2")->shouldReturn(3);
+        $this->add('//;\n1;2')->shouldReturn(3);
     }
 
     function it_should_return_an_exception_with_negative_numbers()
@@ -45,5 +45,10 @@ class CalcSpec extends ObjectBehavior
     function it_should_ignore_numbers_bigger_than_1000()
     {
         $this->add('1,3,1000,1001')->shouldReturn(1004);
+    }
+
+    function its_delimiter_could_be_of_any_length()
+    {
+        $this->add('//[***]\n1***2***3')->shouldReturn(6);
     }
 }

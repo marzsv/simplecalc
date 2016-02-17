@@ -4,16 +4,44 @@ namespace Tractionboard;
 
 class Calc
 {
-    public function add($numbers)
+    private $string;
+    private $delimiters;
+    private $total;
+
+    public function __construct()
     {
-        $total = 0;
-        $separators = [",", "\n"];
+        $this->delimiters = [',', '\n'];
+        $this->total = 0;
+    }
 
-        if(self::customDelimiter($numbers)) $separators[] = $numbers[2];
+    public function prepare()
+    {
+        if(preg_match('@^\/\/\[@', $this->string))
+        {
+            list($a, $b) = explode('\n', $this->string);
+            $this->delimiters[] = substr($a, 3,1);
+        }
+        elseif(preg_match('@^\/\/@', $this->string))
+        {
+            list($a, $b) = explode('\n', $this->string);
+            $this->delimiters[] = substr($a, 2);
+        }
 
-        $numbers = preg_split("/" .implode('|', $separators). "/", $numbers);
+        var_dump($this->delimiters);
 
-        foreach($numbers as $number)
+        foreach($this->delimiters as $delimiter)
+        {
+            $this->string = str_replace($delimiter, '+', $this->string);
+        }
+    }
+
+    public function add($string)
+    {
+        $this->string = $string;
+
+        $this->prepare();
+
+        foreach(explode('+', $this->string) as $number)
         {
             $number = (int) $number;
 
@@ -25,19 +53,9 @@ class Calc
                 continue;
             }
 
-            $total += $number;
+            $this->total += $number;
         }
 
-        return $total;
-    }
-
-    private static function customDelimiter($numbers)
-    {
-        return substr($numbers, 0,2) == '//';
-    }
-
-    private static function isValid()
-    {
-
+        return $this->total;
     }
 }
