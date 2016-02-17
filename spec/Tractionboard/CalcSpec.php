@@ -36,4 +36,14 @@ class CalcSpec extends ObjectBehavior
     {
         $this->add("//;\n1;2")->shouldReturn(3);
     }
+
+    function it_should_return_an_exception_with_negative_numbers()
+    {
+        $this->shouldThrow('\Exception')->duringAdd('1,-2');
+    }
+
+    function it_should_ignore_numbers_bigger_than_1000()
+    {
+        $this->add('1,3,1000,1001')->shouldReturn(1004);
+    }
 }
