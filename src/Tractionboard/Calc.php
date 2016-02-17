@@ -4,8 +4,8 @@ namespace Tractionboard;
 
 class Calc
 {
-    private $string;
     private $delimiters;
+    private $operands;
     private $total;
 
     public function __construct()
@@ -14,34 +14,11 @@ class Calc
         $this->total = 0;
     }
 
-    public function prepare()
-    {
-        if(preg_match('@^\/\/\[@', $this->string))
-        {
-            list($a, $b) = explode('\n', $this->string);
-            $this->delimiters[] = substr($a, 3,1);
-        }
-        elseif(preg_match('@^\/\/@', $this->string))
-        {
-            list($a, $b) = explode('\n', $this->string);
-            $this->delimiters[] = substr($a, 2);
-        }
-
-        var_dump($this->delimiters);
-
-        foreach($this->delimiters as $delimiter)
-        {
-            $this->string = str_replace($delimiter, '+', $this->string);
-        }
-    }
-
     public function add($string)
     {
-        $this->string = $string;
+        $total = 0;
 
-        $this->prepare();
-
-        foreach(explode('+', $this->string) as $number)
+        foreach($this->operands($string) as $number)
         {
             $number = (int) $number;
 
@@ -49,13 +26,55 @@ class Calc
             {
                 throw new \Exception('negatives not allowed');
             }
-            elseif ($number > 1000) {
+            elseif ($number > 1000)
+            {
                 continue;
             }
 
-            $this->total += $number;
+            $total += $number;
         }
 
-        return $this->total;
+        return $total;
+    }
+
+    public function operands($string)
+    {
+        $operands = [];
+        $delimiters = $this->delimiters($string);
+        $string = str_replace($delimiters, '+', $string);
+
+        foreach(explode('+', $string) as $operand)
+        {
+            if(is_numeric($operand))
+            {
+                $operands[] = $operand;
+            }
+        }
+
+        return $operands;
+    }
+
+    private function delimiters($string)
+    {
+        $delimiters = [];
+
+        //if the string begins with '//['
+        if(preg_match('@^\/\/\[@', $string))
+        {
+            //if it has multiple custom delimiters or a custom delimiter of variable length
+            preg_match_all('/\[[^\[]+\]/', $string, $matches);
+            foreach($matches[0] as $delimiter)
+            {
+                $delimiters[] = str_replace(['[', ']'], '', $delimiter);
+            }
+        }
+        //or the string begins with '//' (just one custom delimiter)
+        elseif(preg_match('@^\/\/@', $string))
+        {
+            $delimiterExpression = explode('\n', $string)[0];
+            $delimiters[] = substr($delimiterExpression, 2);
+        }
+
+        return array_merge($delimiters, $this->delimiters);
     }
 }

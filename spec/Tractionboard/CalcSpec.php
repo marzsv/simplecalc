@@ -27,12 +27,12 @@ class CalcSpec extends ObjectBehavior
         $this->add("1,2,3")->shouldReturn(6);
     }
 
-    function it_should_accept_new_line_char_as_separator()
+    function it_should_accept_new_line_char_as_delimiter()
     {
         $this->add('1\n2,3')->shouldReturn(6);
     }
 
-    function it_should_accept_any_char_as_separator()
+    function it_should_accept_any_char_as_delimiter()
     {
         $this->add('//;\n1;2')->shouldReturn(3);
     }
@@ -50,5 +50,10 @@ class CalcSpec extends ObjectBehavior
     function its_delimiter_could_be_of_any_length()
     {
         $this->add('//[***]\n1***2***3')->shouldReturn(6);
+    }
+
+    function it_supports_multiple_custom_delimiters()
+    {
+        $this->add('//[*][%]\n1*2%3')->shouldReturn(6);
     }
 }
