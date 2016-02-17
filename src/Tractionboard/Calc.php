@@ -8,8 +8,17 @@ class Calc
     {
         if(empty($numbers)) return 0;
 
-        $numbers = preg_split("/,|\n/", $numbers);
+        $separators = [",", "\n"];
+
+        if(self::customDelimiter($numbers)) $separators[] = $numbers[2];
+
+        $numbers = preg_split("/" .implode('|', $separators). "/", $numbers);
 
         return array_sum($numbers);
+    }
+
+    private static function customDelimiter($numbers)
+    {
+        return substr($numbers, 0,2) == '//';
     }
 }

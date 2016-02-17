@@ -31,4 +31,9 @@ class CalcSpec extends ObjectBehavior
     {
         $this->add("1\n2,3")->shouldReturn(6);
     }
+
+    function it_should_accept_any_char_as_separator()
+    {
+        $this->add("//;\n1;2")->shouldReturn(3);
+    }
 }
