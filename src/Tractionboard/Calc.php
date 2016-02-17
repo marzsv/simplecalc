@@ -8,7 +8,7 @@ class Calc
     {
         if(empty($numbers)) return 0;
 
-        $numbers = explode(",", $numbers);
+        $numbers = preg_split("/,|\n/", $numbers);
 
         return array_sum($numbers);
     }
