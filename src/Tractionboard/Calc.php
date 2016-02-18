@@ -5,13 +5,10 @@ namespace Tractionboard;
 class Calc
 {
     private $delimiters;
-    private $operands;
-    private $total;
 
     public function __construct()
     {
         $this->delimiters = [',', '\n'];
-        $this->total = 0;
     }
 
     public function add($string)
@@ -37,6 +34,11 @@ class Calc
         return $total;
     }
 
+    /**
+     * It returns an array of operands
+     * @param  string $string
+     * @return mixed
+     */
     public function operands($string)
     {
         $operands = [];
@@ -54,6 +56,11 @@ class Calc
         return $operands;
     }
 
+    /**
+     * It returns an array of delimiters
+     * @param  string $string
+     * @return mixed
+     */
     private function delimiters($string)
     {
         $delimiters = [];
